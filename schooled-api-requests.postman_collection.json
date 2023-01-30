@@ -1,0 +1,74 @@
+{
+	"info": {
+		"_postman_id": "d51f603b-4bc3-4c72-817c-3d09188897cd",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20909628"
+	},
+	"item": [
+		{
+			"name": "get one course",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8081/course/5"
+			},
+			"response": []
+		},
+		{
+			"name": "create new course",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Physics\",\n    \"description\": \"Theoretical Physics is impossible\",\n    \"attendees\": 30\n}"
+				},
+				"url": "http://localhost:8081/course"
+			},
+			"response": []
+		},
+		{
+			"name": "delete with id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/course/-1"
+			},
+			"response": []
+		},
+		{
+			"name": "search math",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/course/search/Math"
+			},
+			"response": []
+		},
+		{
+			"name": "get all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/course"
+			},
+			"response": []
+		}
+	]
+}
