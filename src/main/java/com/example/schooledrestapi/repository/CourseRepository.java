@@ -28,6 +28,15 @@ public class CourseRepository {
     return course;
   }
 
+  private PreparedStatement injectCourse(String sql, Course course) throws SQLException {
+    PreparedStatement pstmt = conn.prepareStatement(sql);
+    pstmt.setString(1, course.getName());
+    pstmt.setString(2, course.getDescription());
+    pstmt.setInt(3, course.getAttendees());
+
+    return pstmt;
+  }
+
   public List<Course> getAll() {
     List<Course> courses = new ArrayList<>();
     String sql = "SELECT * FROM courses";
@@ -51,7 +60,6 @@ public class CourseRepository {
   public Course get(int id) {
     Course course = null;
     String sql = "SELECT * FROM courses WHERE id=?";
-
     try {
       PreparedStatement pstmt = conn.prepareStatement(sql);
       pstmt.setInt(1, id);
@@ -70,15 +78,22 @@ public class CourseRepository {
     return course;
   }
 
+  public Course update(Course course) {
+    String sql = "UPDATE courses SET name=?, description=?, attendees=? WHERE id=?";
+    try {
+      PreparedStatement pstmt = injectCourse(sql, course);
+      pstmt.setLong(4, course.getId());
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return course;
+  }
+
   public Course save(Course course) {
     String sql = "INSERT INTO courses (name, description, attendees) VALUES (?, ?, ?)";
-    PreparedStatement pstmt = null;
     try {
-      pstmt = conn.prepareStatement(sql);
-      pstmt.setString(1, course.getName());
-      pstmt.setString(2, course.getDescription());
-      pstmt.setInt(3, course.getAttendees());
-
+      PreparedStatement pstmt = injectCourse(sql, course);
       pstmt.executeUpdate();
 
     } catch (SQLException e) {

@@ -57,18 +57,21 @@ public class CourseController {
     return ResponseEntity.ok(new CourseNameDetails(course));
   }
 
-  @PostMapping("course")
-  public ResponseEntity<List<Course>> createCourse(@RequestBody Course course) {
+    /*
+    Implementera en patchmapping
+    Uppdatera en kurs med hjälp av dess Id
+  */
+
+  @PostMapping
+  @PatchMapping
+  @RequestMapping("course")
+  public ResponseEntity<List<Course>> saveCourse(@RequestBody Course course) {
     courseService.save(course);
 
     List<Course> courses = courseService.getAll();
     return ResponseEntity.status(201).body(courses);
   }
 
-  /*
-    Implementera en patchmapping
-    Uppdatera en kurs med hjälp av dess Id
-  */
 
   @DeleteMapping("course/{courseId}")
   public ResponseEntity<Course> deleteCourse(@PathVariable int courseId) {

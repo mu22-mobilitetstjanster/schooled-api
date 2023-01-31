@@ -21,7 +21,11 @@ public class CourseService {
   }
 
   public Course save(Course course) {
-    return courseRepository.save(course);
+    if(course.getId() == 0) {
+      return courseRepository.save(course);
+    } else {
+      return courseRepository.update(course);
+    }
   }
 
 }
