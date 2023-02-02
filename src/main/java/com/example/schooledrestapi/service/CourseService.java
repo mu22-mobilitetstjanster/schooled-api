@@ -1,27 +1,28 @@
 package com.example.schooledrestapi.service;
 
 import com.example.schooledrestapi.model.Course;
-import com.example.schooledrestapi.repository.CourseRepository;
+import com.example.schooledrestapi.repository.JpaCourseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CourseService {
-  private CourseRepository courseRepository;
 
-  public CourseService() {
-    courseRepository = new CourseRepository();
-  }
+  @Autowired
+  private JpaCourseRepository jpaCourseRepository;
 
   public List<Course> getAll() {
-    return courseRepository.getAll();
+    return jpaCourseRepository.findAll();
   }
 
   public Course get(int id) {
-    return courseRepository.get(id);
+    return jpaCourseRepository.getReferenceById((long) id);
   }
 
   public Course save(Course course) {
-    return courseRepository.save(course);
+    return jpaCourseRepository.save(course);
   }
 
 }

@@ -5,6 +5,7 @@ import com.example.schooledrestapi.model.CourseNameDetails;
 import com.example.schooledrestapi.model.NullCourse;
 import com.example.schooledrestapi.service.CourseService;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,12 @@ public class CourseController {
 
   private List<Course> courses;
 
+  @Autowired
   private CourseService courseService;
 
-  public CourseController() {
+  /*public CourseController() {
     courseService = new CourseService();
-  }
+  }*/
 
   @GetMapping("course/search/{query}")
   public List<Course> getSearchResult(@PathVariable String query) {
