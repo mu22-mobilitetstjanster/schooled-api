@@ -33,7 +33,7 @@ public class StudentController {
   @PutMapping("student")
   public ResponseEntity<List<Student>> addStudent(@RequestBody Student student) {
     studentService.save(student);
-    studentStateSocketHandler.broadcast(student.getName() + " was created");
+    studentStateSocketHandler.broadcast("new-student", student.getName() + " was created");
     return getAllStudents();
   }
 
@@ -64,6 +64,10 @@ public class StudentController {
     studentService.save(newStudent);
 
     // broadcast student changes
-    studentStateSocketHandler.broadcast(oldStudent, newStudent);
+    if(newStudent.isOnline()) {
+      studentStateSocketHandler.broadcast("online", oldStudent, newStudent);
+    } else {
+      studentStateSocketHandler.broadcast("offline", oldStudent, newStudent);
+    }
   }
 }

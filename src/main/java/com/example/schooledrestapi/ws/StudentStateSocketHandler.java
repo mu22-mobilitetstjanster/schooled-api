@@ -26,24 +26,28 @@ public class StudentStateSocketHandler extends TextWebSocketHandler {
     //broadcast(message.getPayload());
   }
 
-  public void broadcast(Student oldState, Student newState) {
+  public void broadcast(String channel, Student oldState, Student newState) {
     StudentStateDetails details = new StudentStateDetails(oldState, newState);
-    broadcastJson(details);
+    broadcastJson(channel, details);
   }
 
-  public void broadcast(Student student) {
-    broadcastJson(student.clone());
-  }
+  /*public void broadcast(Student student) {
+    broadcastJson("", student.clone());
+  }*/
 
-  public void broadcastJson(Object object) {
+  public void broadcastJson(String channel, Object object) {
     Gson gson = new Gson();
-    broadcast(gson.toJson(object));
+    broadcast(channel, gson.toJson(object));
   }
 
-  public void broadcast(String message) {
+  public void broadcast(String channel, String message) {
     try {
       for (WebSocketSession webSession : sessions) { // broadcast
-        webSession.sendMessage(new TextMessage(message));
+        String state = webSession.getHandshakeHeaders().getFirst("student-state");
+        String studentList = webSession.getHandshakeHeaders().getFirst("student-list");
+        if(channel.equals(state) || channel.equals(studentList)) {
+          webSession.sendMessage(new TextMessage(message));
+        }
       }
     } catch(IOException ex) {
       ex.printStackTrace();
