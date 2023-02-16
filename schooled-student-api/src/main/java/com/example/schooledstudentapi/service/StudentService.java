@@ -1,0 +1,31 @@
+package com.example.schooledstudentapi.service;
+
+import com.example.schooledstudentapi.model.Student;
+import com.example.schooledstudentapi.repository.JpaStudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class StudentService {
+
+  @Autowired
+  private JpaStudentRepository studentRepository;
+
+  public List<Student> getAll() {
+    return studentRepository.findAll();
+  }
+
+  public Student get(long id) {
+    return studentRepository.findById(id).get();
+  }
+
+  public Student save(Student student) {
+    return studentRepository.save(student);
+  }
+
+  public void delete(long studentId) {
+    studentRepository.deleteById(studentId);
+  }
+}

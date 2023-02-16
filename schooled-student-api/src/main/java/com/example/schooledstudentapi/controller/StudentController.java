@@ -1,0 +1,73 @@
+package com.example.schooledstudentapi.controller;
+
+import com.example.schooledstudentapi.model.Student;
+import com.example.schooledstudentapi.service.StudentService;
+import com.example.schooledstudentapi.ws.StudentStateSocketHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class StudentController {
+
+  @Autowired
+  private StudentStateSocketHandler studentStateSocketHandler;
+
+  @Autowired
+  private StudentService studentService;
+
+  @GetMapping("student/{studentId}")
+  public ResponseEntity<Student> getStudentById(@PathVariable long studentId) {
+    return ResponseEntity.ok(studentService.get(studentId));
+  }
+
+  @GetMapping("student")
+  public ResponseEntity<List<Student>> getAllStudents() {
+    return ResponseEntity.ok(studentService.getAll());
+  }
+
+  @PostMapping("student")
+  @PatchMapping("student")
+  @PutMapping("student")
+  public ResponseEntity<List<Student>> addStudent(@RequestBody Student student) {
+    studentService.save(student);
+    studentStateSocketHandler.broadcast("new-student", student.getName() + " was created");
+    return getAllStudents();
+  }
+
+  @DeleteMapping("student")
+  public ResponseEntity<List<Student>> deleteStudent(@RequestBody Student student) {
+    studentService.delete(student.getId());
+    return getAllStudents();
+  }
+
+  @DeleteMapping("student/{studentId}")
+  public ResponseEntity<List<Student>> deleteStudent(@PathVariable long studentId) {
+    studentService.delete(studentId);
+    return getAllStudents();
+  }
+
+  @PatchMapping("student/online/{state}/{studentId}")
+  public void setOnlineState(@PathVariable String state, @PathVariable long studentId) {
+    Student newStudent = studentService.get(studentId);
+    Student oldStudent = newStudent.clone();
+
+    switch(state) {
+      case "online": newStudent.setOnline(true); break;
+      case "offline": newStudent.setOnline(false); break;
+      default: throw new IllegalStateException(state + " was illdefined");
+    }
+
+
+    studentService.save(newStudent);
+
+    // broadcast student changes
+    if(newStudent.isOnline()) {
+      studentStateSocketHandler.broadcast("online", oldStudent, newStudent);
+    } else {
+      studentStateSocketHandler.broadcast("offline", oldStudent, newStudent);
+    }
+  }
+}
