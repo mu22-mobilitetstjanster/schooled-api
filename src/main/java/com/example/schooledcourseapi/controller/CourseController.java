@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/course/*")
 public class CourseController {
 
   @Autowired
   private CourseService courseService;
 
-  @GetMapping("course")
+  @GetMapping
   public ResponseEntity<List<Course>> getCourses() {
     List<Course> courses = courseService.getAll();
 
@@ -30,17 +31,17 @@ public class CourseController {
     }
   }
 
-  @GetMapping("course/name/{name}")
+  @GetMapping("name/{name}")
   public ResponseEntity<Course> getCourse(@PathVariable String name) {
     return ResponseEntity.ok(courseService.getBy(name));
   }
 
-  @GetMapping("courses/name/{name}/{description}")
+  @GetMapping("name/{name}/{description}")
   public ResponseEntity<List<Course>> getCourses(@PathVariable String name, @PathVariable String description) {
     return ResponseEntity.ok(courseService.getAllBy(name));
   }
 
-  @GetMapping("course/{courseId}")
+  @GetMapping("{courseId}")
   public ResponseEntity<CourseNameDetails> getCourse(@PathVariable int courseId) {
     Course course = courseService.get(courseId);
 
@@ -54,7 +55,7 @@ public class CourseController {
     return ResponseEntity.ok(new CourseNameDetails(course));
   }
 
-  @PostMapping("course")
+  @PostMapping
   public ResponseEntity<List<Course>> createCourse(@RequestBody Course course) {
     courseService.save(course);
 
